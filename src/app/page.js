@@ -59,8 +59,8 @@ export default function Home() {
   const newData = data[0];
   const items =
     newData &&
-    result &&
-    result[0] &&
+    newData?.result &&
+       newData?.result[0] &&
     newData?.result[0]?.items &&
     newData?.result[0]?.items[0];
 
