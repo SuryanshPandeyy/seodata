@@ -4,8 +4,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import styles from "./page.module.css";
 import { RiLoader3Line } from "react-icons/ri";
+import { CircularProgressbar } from "react-circular-progressbar";
 
-const API = "https://api.dataforseo.com/v3/on_page/task_post";
+const API = "https://api.dataforseo.com/v3/on_page/instant_pages";
 
 const config = {
   auth: {
@@ -15,17 +16,13 @@ const config = {
 
   headers: {
     "content-type": "application/json",
-    "Access-Control-Allow-Headers":
-      "Origin, Content-Type, Accept, Authorization, X-Request-With",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, GET, OPTIONS, PUT, DELETE",
   },
 };
 
 export default function Home() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
 
   const submitUrl = async (e) => {
     e.preventDefault();
@@ -33,11 +30,10 @@ export default function Home() {
 
     const post_array = [
       {
-        target: url,
-        max_crawl_pages: 10,
+        url,
         load_resources: true,
         enable_javascript: true,
-        custom_js: "meta = {}; meta.url = document.URL; meta;",
+        enable_browser_rendering: true,
       },
     ];
 
@@ -45,13 +41,11 @@ export default function Home() {
       await axios
         .post(API, post_array, config)
         .then((response) => {
+          setLoading(false);
+
           const result = response["data"]["tasks"];
-          const id = result && result[0]?.id;
-
-          getPage(id);
-
-          // Result data
-          console.log(id);
+          setData(result);
+          console.log(result);
         })
         .catch(function (error) {
           setLoading(false);
@@ -62,31 +56,8 @@ export default function Home() {
     }
   };
 
-  const getPage = async (id) => {
-    const post_array = [
-      {
-        id,
-        url,
-      },
-    ];
-
-    try {
-      await axios
-        .post(url, post_array, config)
-        .then(function (res) {
-          setLoading(false);
-          var result = res["data"]["tasks"];
-          setData(result[0]);
-          console.log(result);
-        })
-        .catch(function (error) {
-          setLoading(false);
-          console.log(error);
-        });
-    } catch (err) {
-      setLoading(false);
-    }
-  };
+  const newData = data[0];
+  const items = newData?.result[0]?.items[0];
 
   return (
     <main className={styles.main}>
@@ -108,6 +79,82 @@ export default function Home() {
           Submit
         </button>
       </form>
+
+      {items && (
+        <div className={styles.container}>
+          <CircularProgressbar
+            className={styles.progress}
+            value={items?.onpage_score || 0}
+            text={`${items?.onpage_score.toFixed(0)}%`}
+          />
+
+          <div className={styles.grid}>
+            {Object.entries(items?.meta?.content).map((item, i) => {
+              const names = item[0]
+                ?.split("_")
+                .join(" ")
+                .replace(/\b\w/g, (match) => match.toUpperCase());
+
+              return (
+                <div key={i} className={styles.box}>
+                  <p className={styles.gridValue}>
+                    {parseFloat(Number(item[1])?.toFixed(2))}
+                  </p>
+                  <p className={styles.gridTitle}>{names}</p>
+                </div>
+              );
+            })}
+
+            <div className={styles.box}>
+              <p className={styles.gridValue}>
+                {items?.meta?.internal_links_count}
+              </p>
+              <p className={styles.gridTitle}>Internal Links Count</p>
+            </div>
+
+            <div className={styles.box}>
+              <p className={styles.gridValue}>
+                {items?.meta?.external_links_count}
+              </p>
+              <p className={styles.gridTitle}>External Links Count</p>
+            </div>
+
+            <div className={styles.box}>
+              <p className={styles.gridValue}>{items?.meta?.images_count}</p>
+              <p className={styles.gridTitle}>Number of Images</p>
+            </div>
+
+            <div className={styles.box}>
+              <p className={styles.gridValue}>{items?.meta?.images_size}</p>
+              <p className={styles.gridTitle}>Images Size</p>
+            </div>
+
+            <div className={styles.box}>
+              <p className={styles.gridValue}>{items?.meta?.scripts_count}</p>
+              <p className={styles.gridTitle}>Scripts</p>
+            </div>
+
+            <div className={styles.box}>
+              <p className={styles.gridValue}>{items?.meta?.scripts_size}</p>
+              <p className={styles.gridTitle}>Scripts Size</p>
+            </div>
+
+            <div className={styles.box}>
+              <p className={styles.gridValue}>
+                {items?.meta?.stylesheets_count}
+              </p>
+              <p className={styles.gridTitle}>Stylesheets Count</p>
+            </div>
+
+            <div className={styles.box}>
+              <p className={styles.gridValue}>
+                {items?.meta?.stylesheets_size}
+              </p>
+              <p className={styles.gridTitle}>Stylesheets Size</p>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

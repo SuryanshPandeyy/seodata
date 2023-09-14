@@ -37,7 +37,7 @@
 }
 
 .loading {
-  animation: rotate 1s linear 1s infinite;
+  animation: rotate 1s linear 0s infinite;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -50,4 +50,41 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 2rem 1rem;
+  padding: 1rem;
+  width: 100%;
+}
+
+.box {
+  width: 100%;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 2rem;
+  text-align: center;
+}
+
+.gridTitle {
+  font-size: 1.2rem;
+}
+
+.gridValue {
+  font-size: 2rem;
+}
+
+.progress {
+  width: 10rem;
+  aspect-ratio: 1;
+  margin: 2rem 0;
 }
