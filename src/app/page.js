@@ -57,7 +57,12 @@ export default function Home() {
   };
 
   const newData = data[0];
-  const items = newData?.result[0]?.items[0];
+  const items =
+    newData &&
+    result &&
+    result[0] &&
+    newData?.result[0]?.items &&
+    newData?.result[0]?.items[0];
 
   return (
     <main className={styles.main}>
@@ -90,15 +95,17 @@ export default function Home() {
 
           <div className={styles.grid}>
             {Object.entries(items?.meta?.content).map((item, i) => {
-              const names = item[0]
-                ?.split("_")
-                .join(" ")
-                .replace(/\b\w/g, (match) => match.toUpperCase());
+              const names =
+                item &&
+                item[0]
+                  ?.split("_")
+                  .join(" ")
+                  .replace(/\b\w/g, (match) => match.toUpperCase());
 
               return (
                 <div key={i} className={styles.box}>
                   <p className={styles.gridValue}>
-                    {parseFloat(Number(item[1])?.toFixed(2))}
+                    {parseFloat(Number(item ? item[1] : 0)?.toFixed(2))}
                   </p>
                   <p className={styles.gridTitle}>{names}</p>
                 </div>
