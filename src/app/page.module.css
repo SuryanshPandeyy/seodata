@@ -1,0 +1,53 @@
+.urlContainer {
+  display: flex;
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.input {
+  width: 100%;
+  font-size: 2rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: none;
+  outline: none;
+}
+
+.input::placeholder {
+  font-size: 1.5rem;
+}
+
+.submit {
+  background-color: #0069ff;
+  border: none;
+  outline: none;
+  padding: 0 2.5rem;
+  border-radius: 1rem;
+  color: #fff;
+}
+
+.loader {
+  position: absolute;
+  inset: 0;
+  z-index: 99;
+  background-color: #00000098;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading {
+  animation: rotate 1s linear 1s infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
